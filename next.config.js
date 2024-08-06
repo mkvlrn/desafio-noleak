@@ -3,4 +3,7 @@ export default {
   distDir: "dist",
   cleanDistDir: true,
   reactStrictMode: true,
+  experimental: {
+    optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
+  },
 };
