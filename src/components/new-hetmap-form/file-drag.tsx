@@ -35,6 +35,14 @@ export function NewHeatmapFormDrag({
 }: NewHeatmapFormDragJsonProperties) {
   function attachFile(files: File[]) {
     if (files.length > 0) {
+      const input = document.querySelector<HTMLInputElement>(
+        `input[name="${type}-data"]`,
+      );
+      if (input) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(files[0]);
+        input.files = dataTransfer.files;
+      }
       setJsonData(files[0].name);
     }
   }

@@ -1,5 +1,7 @@
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 import type { Metadata } from "next";
 import { Shell } from "~/components/shell";
 
@@ -18,6 +20,7 @@ export default function RootLayout({
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark">
+          <Notifications />
           <Shell>{children}</Shell>
         </MantineProvider>
       </body>
