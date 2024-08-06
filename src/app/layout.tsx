@@ -1,6 +1,7 @@
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import type { Metadata } from "next";
+import { Shell } from "~/components/shell";
 
 export const metadata: Metadata = {
   title: "desafio-noleak | mkvlrn@gmail.com",
@@ -13,10 +14,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider defaultColorScheme="dark">
+          <Shell>{children}</Shell>
+        </MantineProvider>
       </body>
     </html>
   );

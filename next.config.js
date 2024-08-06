@@ -4,6 +4,6 @@ export default {
   cleanDistDir: true,
   reactStrictMode: true,
   experimental: {
-    optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
+    optimizePackageImports: ["@mantine/core", "@mantine/hooks", "@tabler/icons-react"],
   },
 };
