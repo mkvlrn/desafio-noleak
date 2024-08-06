@@ -1,15 +1,13 @@
 "use client";
 
 import { Center, Container, Paper, Text, TextInput } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { IconAlertCircle, IconRocket } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormState } from "react-dom";
 import { createHeatmap } from "~/actions";
-import { CreateHeatmapFormState } from "~/actions/create-heatmap";
 import { NewHeatmapFormButtons } from "~/components/new-hetmap-form/buttons";
 import { NewHeatmapFormDrag } from "~/components/new-hetmap-form/file-drag";
 import { NewHeatmapFormFileStatus } from "~/components/new-hetmap-form/file-status";
+import { useHeatmapNotifications } from "~/hooks/use-heatmap-notifications";
 
 export function NewHetmapForm() {
   const [jsonFile, setJsonFile] = useState<string | undefined>();
@@ -17,38 +15,12 @@ export function NewHetmapForm() {
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
   const [state, createHeatmapAction] = useFormState(createHeatmap, { errors: {} });
 
-  useEffect(() => {
-    console.log(state);
-    if (Object.keys(state.errors).length === 0) {
-      if (state.success) {
-        notifications.show({
-          title: "Sucesso",
-          message: "Heatmap gerado com sucesso",
-          color: "green",
-          icon: <IconRocket size={16} />,
-        });
-      }
-
-      setJsonFile(undefined);
-      setImgFile(undefined);
-      setSearchTerm("");
-
-      return;
-    }
-
-    for (const key in state.errors) {
-      const typedKey = key as keyof CreateHeatmapFormState["errors"];
-
-      for (const error of state.errors[typedKey] ?? []) {
-        notifications.show({
-          title: "Erro",
-          message: error,
-          color: "red",
-          icon: <IconAlertCircle size={16} />,
-        });
-      }
-    }
-  }, [state]);
+  useHeatmapNotifications({
+    state,
+    setJsonFile,
+    setImgFile,
+    setSearchTerm,
+  });
 
   return (
     <Container size="sm" my={30}>

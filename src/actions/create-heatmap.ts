@@ -81,6 +81,10 @@ function generateHeatPaint(image: Image, data: HeatmapData[]) {
 
     heatPaint[cY][cX]++;
   }
+  const termFound = heatPaint.some((row) => row.some((value) => value > 0));
+  if (!termFound) {
+    throw new Error("Nenhuma ocorrência encontrada", { cause: "term" });
+  }
 
   // find the maximum intensity value to normalize the heatmap
   let max = 0;
@@ -148,7 +152,12 @@ export async function createHeatmap(
     const plot = plotData(colorMap, image, heatPaint, scaleFactor, canvas, context);
 
     await writeFile("test.png", plot);
-  } catch {
+  } catch (error) {
+    const { cause } = error as Error;
+    if (cause === "term") {
+      return { errors: { searchTerm: ["Nenhuma ocorrência encontrada"] } };
+    }
+
     return { errors: { _form: ["Erro ao gerar heatmap"] } };
   }
 
