@@ -1,3 +1,5 @@
+import { PageTitle } from "~/components/page-title";
+
 export default function About() {
-  return <div>Sobre</div>;
+  return <PageTitle title="Sobre" />;
 }

@@ -1,3 +1,11 @@
+import { NewHetmapTabs } from "~/components/new-hetmap/tabs";
+import { PageTitle } from "~/components/page-title";
+
 export default function Home() {
-  return <div>Novo heatmap</div>;
+  return (
+    <>
+      <PageTitle title="Novo Hetmap" />
+      <NewHetmapTabs />
+    </>
+  );
 }

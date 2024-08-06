@@ -1,3 +1,5 @@
+import { PageTitle } from "~/components/page-title";
+
 export default function Heatmaps() {
-  return <div>Banco de heatmaps</div>;
+  return <PageTitle title="Banco de Heatmaps" />;
 }
