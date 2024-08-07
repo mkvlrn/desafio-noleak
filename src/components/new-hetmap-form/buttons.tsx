@@ -6,7 +6,7 @@ interface NewHeatmapFormButtonsProperties {
   searchTerm?: string;
   setJsonFile: (fileName?: string) => void;
   setImgFile: (fileName?: string) => void;
-  setSearchTerm: (searchTerm?: string) => void;
+  setSearchTerm: (searchTerm: string) => void;
 }
 
 export function NewHeatmapFormButtons({
@@ -32,7 +32,7 @@ export function NewHeatmapFormButtons({
           onClick={() => {
             setJsonFile(undefined);
             setImgFile(undefined);
-            setSearchTerm(undefined);
+            setSearchTerm("");
           }}
         >
           Limpar

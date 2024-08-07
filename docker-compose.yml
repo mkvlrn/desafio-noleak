@@ -1,0 +1,18 @@
+name: desafio-nolea
+
+services:
+  redis:
+    container_name: local-redis
+    image: redis:alpine
+    command: >
+      --requirepass redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    networks:
+      - default
+
+volumes:
+  redis-data:

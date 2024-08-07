@@ -28,11 +28,11 @@ export function useHeatmapNotifications({
           color: "green",
           icon: <IconRocket size={16} />,
         });
-      }
 
-      setJsonFile(undefined);
-      setImgFile(undefined);
-      setSearchTerm("");
+        setJsonFile(undefined);
+        setImgFile(undefined);
+        setSearchTerm("");
+      }
 
       return;
     }

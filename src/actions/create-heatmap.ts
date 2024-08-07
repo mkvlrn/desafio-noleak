@@ -1,6 +1,6 @@
 "use server";
 
-import { writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import {
   Canvas,
   CanvasRenderingContext2D,
@@ -9,7 +9,7 @@ import {
   loadImage,
 } from "canvas";
 import colormap from "colormap";
-import { revalidatePath } from "next/cache";
+import { redis } from "~/redis";
 
 export interface CreateHeatmapFormState {
   errors: {
@@ -136,6 +136,52 @@ function plotData(
   return canvas.toBuffer("image/png");
 }
 
+async function generateUniqueHash(jsonFile: File, imgFile: File, searchTerm: string) {
+  const jsonBuffer = Buffer.from(await jsonFile.arrayBuffer());
+  const imgBuffer = Buffer.from(await imgFile.arrayBuffer());
+
+  const combinedBuffer = Buffer.concat([
+    jsonBuffer,
+    imgBuffer,
+    Buffer.from(searchTerm),
+  ]);
+
+  return createHash("sha256").update(combinedBuffer).digest("hex");
+}
+
+async function uploadHeatmap(buffer: Buffer) {
+  const { FREEIMAGEHOST_API_KEY } = process.env;
+  const source = buffer.toString("base64");
+
+  if (!FREEIMAGEHOST_API_KEY) {
+    throw new Error("variável de ambiente FREEIMAGEHOST_API_KEY não encontrada");
+  }
+
+  interface FreeImageHostUploadResponse {
+    status_code: number;
+    image: {
+      url: string;
+    };
+  }
+
+  const formData = new FormData();
+  formData.append("key", FREEIMAGEHOST_API_KEY);
+  formData.append("source", source);
+
+  const response = await fetch(`https://freeimage.host/api/1/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao salvar imagem");
+  }
+
+  const json = (await response.json()) as FreeImageHostUploadResponse;
+
+  return json.image.url;
+}
+
 export async function createHeatmap(
   state: CreateHeatmapFormState,
   data: FormData,
@@ -145,14 +191,25 @@ export async function createHeatmap(
     const imgData = data.get("img-data") as File;
     const searchTerm = data.get("search-term") as string;
 
+    const uniqueHash = await generateUniqueHash(jsonData, imgData, searchTerm);
+    const hashExists = await redis.exists(uniqueHash);
+
+    if (hashExists) {
+      return { errors: { _form: ["Combinação de imagem, json e termo já existe"] } };
+    }
+
     const colorMap = getColorMap();
     const { canvas, context, image } = await getCanvas(imgData);
     const heatData = await parseHeatData(jsonData, searchTerm);
     const { heatPaint, scaleFactor } = generateHeatPaint(image, heatData);
     const plot = plotData(colorMap, image, heatPaint, scaleFactor, canvas, context);
+    const imageUrl = await uploadHeatmap(plot);
 
-    await writeFile("test.png", plot);
+    await redis.set(uniqueHash, imageUrl);
+
+    return { errors: {}, success: true };
   } catch (error) {
+    console.log(error);
     const { cause } = error as Error;
     if (cause === "term") {
       return { errors: { searchTerm: ["Nenhuma ocorrência encontrada"] } };
@@ -160,7 +217,4 @@ export async function createHeatmap(
 
     return { errors: { _form: ["Erro ao gerar heatmap"] } };
   }
-
-  revalidatePath("/heatmaps");
-  return { errors: {}, success: true };
 }

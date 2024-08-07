@@ -12,7 +12,7 @@ import { useHeatmapNotifications } from "~/hooks/use-heatmap-notifications";
 export function NewHetmapForm() {
   const [jsonFile, setJsonFile] = useState<string | undefined>();
   const [imgFile, setImgFile] = useState<string | undefined>();
-  const [searchTerm, setSearchTerm] = useState<string | undefined>();
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [state, createHeatmapAction] = useFormState(createHeatmap, { errors: {} });
 
   useHeatmapNotifications({
@@ -65,7 +65,7 @@ export function NewHetmapForm() {
           <TextInput
             name="search-term"
             placeholder="person"
-            defaultValue={searchTerm}
+            value={searchTerm}
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
