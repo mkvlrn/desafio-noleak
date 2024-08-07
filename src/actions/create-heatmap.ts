@@ -216,7 +216,7 @@ export async function createHeatmap(
 
     await redis.set(
       uniqueHash,
-      JSON.stringify({ url: imageUrl, timestamp: Date.now() }),
+      JSON.stringify({ url: imageUrl, timestamp: Date.now(), searchTerm }),
     );
     revalidatePath("/heatmaps");
 

@@ -6,4 +6,7 @@ export default {
   experimental: {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks", "@tabler/icons-react"],
   },
+  images: {
+    domains: ["iili.io"],
+  },
 };

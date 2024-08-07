@@ -7,3 +7,12 @@ if (!REDIS_URL) {
 }
 
 export const redis = new Redis(REDIS_URL);
+
+export interface HeatmapEntry {
+  hash: string;
+  data: {
+    url: string;
+    timestamp: number;
+    searchTerm: string;
+  };
+}
