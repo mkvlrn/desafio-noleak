@@ -1,4 +1,9 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+  S3ClientConfig,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Redis } from "ioredis";
 
@@ -22,16 +27,24 @@ if (
   throw new Error("TODAS as variáveis de ambiente precisam ser definidas");
 }
 
+const LOCAL = S3_ENDPOINT === "http://127.0.0.1:9000";
+
 export const redis = new Redis(REDIS_URL);
 
-const s3 = new S3Client({
+const config: S3ClientConfig = {
   region: AWS_REGION,
   credentials: {
     accessKeyId: ACCESS_KEY_ID,
     secretAccessKey: SECRET_ACCESS_KEY,
   },
-  endpoint: S3_ENDPOINT,
-});
+};
+
+// local minio needs this property
+if (LOCAL) {
+  config.endpoint = S3_ENDPOINT;
+}
+
+const s3client = new S3Client(config);
 
 export async function s3save(key: string, buffer: Buffer, mimeType: string) {
   const fileName = `${key}.${mimeType.split("/")[1]}`;
@@ -41,7 +54,7 @@ export async function s3save(key: string, buffer: Buffer, mimeType: string) {
     ContentType: mimeType,
     Body: buffer,
   });
-  await s3.send(uploadCommand);
+  await s3client.send(uploadCommand);
 
   const downloadCommand = new GetObjectCommand({
     Bucket: AWS_BUCKET_NAME,
@@ -50,9 +63,9 @@ export async function s3save(key: string, buffer: Buffer, mimeType: string) {
   });
 
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  const url = `${S3_ENDPOINT}/${AWS_BUCKET_NAME}/${fileName}`;
+  const url = `${S3_ENDPOINT}/${LOCAL ? `${AWS_BUCKET_NAME}/` : ""}${fileName}`;
 
-  const downloadUrl = await getSignedUrl(s3, downloadCommand, {
+  const downloadUrl = await getSignedUrl(s3client, downloadCommand, {
     expiresIn: 60 * 60 * 24 * 7,
   });
 
