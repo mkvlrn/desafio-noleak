@@ -1,5 +1,5 @@
-import { Button, Center, Group, Image } from "@mantine/core";
-import { IconDownload, IconX } from "@tabler/icons-react";
+import { Button, Flex, Image } from "@mantine/core";
+import { IconDownload } from "@tabler/icons-react";
 import { kv } from "@vercel/kv";
 import { notFound } from "next/navigation";
 import { PageTitle } from "~/components/page-title";
@@ -20,7 +20,7 @@ export default async function Heatmap({ params }: HeatmapProperties) {
   return (
     <>
       <PageTitle title={`Heatmap - ${heatMap.searchTerm}`} />
-      <Group justify="center" mb="md">
+      <Flex direction="column" justify="center" align="center" rowGap={10}>
         <Button
           rightSection={<IconDownload size={16} />}
           component="a"
@@ -28,11 +28,6 @@ export default async function Heatmap({ params }: HeatmapProperties) {
         >
           Download
         </Button>
-        <Button rightSection={<IconX size={16} />} color="red">
-          Apagar
-        </Button>
-      </Group>
-      <Center>
         <Image
           src={heatMap.url}
           w={heatMap.width}
@@ -41,7 +36,7 @@ export default async function Heatmap({ params }: HeatmapProperties) {
           height={heatMap.height}
           alt="heatmap"
         />
-      </Center>
+      </Flex>
     </>
   );
 }

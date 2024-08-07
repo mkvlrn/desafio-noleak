@@ -4,7 +4,12 @@ export default {
   cleanDistDir: true,
   reactStrictMode: true,
   experimental: {
-    optimizePackageImports: ["@mantine/core", "@mantine/hooks", "@tabler/icons-react"],
+    optimizePackageImports: [
+      "@mantine/core",
+      "@mantine/hooks",
+      "@mantine/notifications",
+      "@tabler/icons-react",
+    ],
   },
   images: {
     remotePatterns: [

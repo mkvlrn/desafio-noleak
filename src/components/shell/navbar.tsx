@@ -1,5 +1,3 @@
-"use client";
-
 import { Group, NavLink } from "@mantine/core";
 import {
   IconArrowRight,

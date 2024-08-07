@@ -7,7 +7,6 @@ import { type HeatmapEntry } from "~/types";
 export default async function Heatmaps() {
   const keys = await kv.keys("*");
   const values = keys.length > 0 ? await kv.mget<HeatmapEntry["data"][]>(keys) : [];
-  console.log(values);
   const data = values.map((data, index) => ({
     hash: keys[index],
     data,

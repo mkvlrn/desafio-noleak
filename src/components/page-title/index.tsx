@@ -1,5 +1,3 @@
-"use client";
-
 import { Center, Title } from "@mantine/core";
 
 interface PageTitleProperties {
