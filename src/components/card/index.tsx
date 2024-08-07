@@ -1,4 +1,5 @@
 import { Card, Flex, Image, Text } from "@mantine/core";
+import NextImage from "next/image";
 import Link from "next/link";
 import { type HeatmapEntry } from "~/types";
 
@@ -29,7 +30,7 @@ export function MapCard({ hash, data }: HeatmapEntry) {
           </Text>
         </div>
         <Link href={`/heatmaps/${hash}`} passHref>
-          <Image src={url} width={80} height={80} alt="heatmap" />
+          <Image src={url} width={80} height={80} alt="heatmap" component={NextImage} />
         </Link>
       </Flex>
     </Card>

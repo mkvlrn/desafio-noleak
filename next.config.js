@@ -24,6 +24,12 @@ export default {
         hostname: "desafio-noleak-mkvlrn.s3.sa-east-1.amazonaws.com",
         port: "",
       },
+      {
+        protocol: "http",
+
+        hostname: "127.0.0.1",
+        port: "9000",
+      },
     ],
   },
 };

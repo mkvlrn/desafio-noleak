@@ -1,5 +1,6 @@
 import { Button, Flex, Image } from "@mantine/core";
 import { IconDownload } from "@tabler/icons-react";
+import NextImage from "next/image";
 import { notFound } from "next/navigation";
 import { PageTitle } from "~/components/page-title";
 import { redis } from "~/tools";
@@ -37,6 +38,7 @@ export default async function Heatmap({ params }: HeatmapProperties) {
           width={heatMap.width}
           height={heatMap.height}
           alt="heatmap"
+          component={NextImage}
         />
       </Flex>
     </>
