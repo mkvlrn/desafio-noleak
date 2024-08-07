@@ -9,6 +9,7 @@ import { NewHeatmapFormDrag } from "~/components/new-hetmap-form/file-drag";
 import { NewHeatmapFormFileStatus } from "~/components/new-hetmap-form/file-status";
 import { LoadingOverlay } from "~/components/new-hetmap-form/loading-overlay";
 import { useHeatmapNotifications } from "~/hooks/use-heatmap-notifications";
+import { useRedirectToHeatmap } from "~/hooks/use-redirect-to-heatmap";
 
 export function NewHetmapForm() {
   const [jsonFile, setJsonFile] = useState<string | undefined>();
@@ -22,6 +23,8 @@ export function NewHetmapForm() {
     setImgFile,
     setSearchTerm,
   });
+
+  useRedirectToHeatmap({ state });
 
   return (
     <form action={createHeatmapAction}>

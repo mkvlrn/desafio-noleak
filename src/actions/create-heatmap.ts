@@ -20,6 +20,7 @@ export interface CreateHeatmapFormState {
     _form?: string[];
   };
   success?: boolean;
+  hash?: string;
 }
 
 interface HeatmapData {
@@ -196,7 +197,14 @@ export async function createHeatmap(
     const hashExists = await redis.exists(uniqueHash);
 
     if (hashExists) {
-      return { errors: { _form: ["Combinação de imagem, json e termo já existe"] } };
+      return {
+        errors: {
+          _form: [
+            "Combinação de imagem, json e termo já existe - redirecionando em 5 segundos",
+          ],
+        },
+        hash: uniqueHash,
+      };
     }
 
     const colorMap = getColorMap();
@@ -206,12 +214,14 @@ export async function createHeatmap(
     const plot = plotData(colorMap, image, heatPaint, scaleFactor, canvas, context);
     const imageUrl = await uploadHeatmap(plot);
 
-    await redis.set(uniqueHash, imageUrl);
+    await redis.set(
+      uniqueHash,
+      JSON.stringify({ url: imageUrl, timestamp: Date.now() }),
+    );
     revalidatePath("/heatmaps");
 
-    return { errors: {}, success: true };
+    return { errors: {}, success: true, hash: uniqueHash };
   } catch (error) {
-    console.log(error);
     const { cause } = error as Error;
     if (cause === "term") {
       return { errors: { searchTerm: ["Nenhuma ocorrência encontrada"] } };

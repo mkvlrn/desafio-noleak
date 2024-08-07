@@ -24,9 +24,10 @@ export function useHeatmapNotifications({
       if (state.success) {
         notifications.show({
           title: "Sucesso",
-          message: "Heatmap gerado com sucesso",
+          message: "Heatmap gerado com sucesso - redirecionando em 5 segundos",
           color: "green",
           icon: <IconRocket size={16} />,
+          autoClose: 5000,
         });
 
         setJsonFile(undefined);
@@ -46,6 +47,7 @@ export function useHeatmapNotifications({
           message: error,
           color: "red",
           icon: <IconAlertCircle size={16} />,
+          autoClose: 5000,
         });
       }
     }
