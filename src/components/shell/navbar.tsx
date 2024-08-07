@@ -1,10 +1,5 @@
 import { Group, NavLink } from "@mantine/core";
-import {
-  IconArrowRight,
-  IconDatabase,
-  IconInfoCircle,
-  IconMap,
-} from "@tabler/icons-react";
+import { IconArrowRight, IconDatabase, IconMap } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -24,11 +19,6 @@ const links: LinkProperties[] = [
     href: "/heatmaps",
     icon: <IconDatabase />,
     label: "Banco de heatmaps",
-  },
-  {
-    href: "/about",
-    icon: <IconInfoCircle />,
-    label: "Sobre",
   },
 ];
 
