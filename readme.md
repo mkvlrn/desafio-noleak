@@ -1,7 +1,5 @@
 # desafio-noleak
 
----
-
 ## rodando
 
 ### no ar
@@ -41,8 +39,6 @@ yarn dev
 
 a aplicação estará disponível em `localhost:3000`
 
----
-
 ## tech
 
 - typescript
@@ -53,8 +49,6 @@ a aplicação estará disponível em `localhost:3000`
 - aws s3
 - docker (em dev)
 
----
-
 ## o desenvolvimento
 
 como não havia instruções muito detalhadas no texto do desafio, tomei algumas liberdades em questão de design e implementação
@@ -64,8 +58,6 @@ usei mantine pra criar a UI porque tenho experiência com a lib e ela é magníf
 em questão de persistência, optei por não salvar as imagens geradas localmente, usando o s3 pra armazená-las, e usando o redis (via upstash) pra salvar os links
 
 redis e s3 rodam localmente em containers, com todas as variáveis de ambiente configuradas para uso local já em `.env.example`
-
----
 
 ## o que faltou
 
