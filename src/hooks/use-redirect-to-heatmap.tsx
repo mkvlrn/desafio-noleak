@@ -13,7 +13,6 @@ export function useRedirectToHeatmap({ state }: UseRedirectToHeatmapProperties) 
 
   useEffect(() => {
     if (state.hash) {
-      console.log("Redirecionando para heatmap");
       async function redirectToHeatmap() {
         await new Promise((resolve) => setTimeout(resolve, 5000));
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions

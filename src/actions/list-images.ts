@@ -1,9 +1,9 @@
 "use server";
 
-import { redis } from "~/redis";
+import { kv } from "@vercel/kv";
 
 export async function listImages() {
-  const keys = await redis.keys("*");
-  console.log(keys);
+  const keys = await kv.keys("*");
+
   return keys;
 }

@@ -7,6 +7,12 @@ export default {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks", "@tabler/icons-react"],
   },
   images: {
-    domains: ["iili.io"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "kqap36f76ezg1dly.public.blob.vercel-storage.com",
+        port: "",
+      },
+    ],
   },
 };

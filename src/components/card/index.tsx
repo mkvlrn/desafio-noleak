@@ -1,7 +1,7 @@
 import { Card, Flex, Text } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
-import { type HeatmapEntry } from "~/redis";
+import { type HeatmapEntry } from "~/types";
 
 export function MapCard({ hash, data }: HeatmapEntry) {
   const { url, timestamp, searchTerm } = data;

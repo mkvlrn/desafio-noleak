@@ -1,6 +1,8 @@
 "use server";
 
 import { createHash } from "node:crypto";
+import { put } from "@vercel/blob";
+import { kv } from "@vercel/kv";
 import {
   Canvas,
   CanvasRenderingContext2D,
@@ -10,7 +12,6 @@ import {
 } from "canvas";
 import colormap from "colormap";
 import { revalidatePath } from "next/cache";
-import { redis } from "~/redis";
 
 export interface CreateHeatmapFormState {
   errors: {
@@ -151,39 +152,6 @@ async function generateUniqueHash(jsonFile: File, imgFile: File, searchTerm: str
   return createHash("sha256").update(combinedBuffer).digest("hex");
 }
 
-async function uploadHeatmap(buffer: Buffer) {
-  const { FREEIMAGEHOST_API_KEY } = process.env;
-  const source = buffer.toString("base64");
-
-  if (!FREEIMAGEHOST_API_KEY) {
-    throw new Error("variável de ambiente FREEIMAGEHOST_API_KEY não encontrada");
-  }
-
-  interface FreeImageHostUploadResponse {
-    status_code: number;
-    image: {
-      url: string;
-    };
-  }
-
-  const formData = new FormData();
-  formData.append("key", FREEIMAGEHOST_API_KEY);
-  formData.append("source", source);
-
-  const response = await fetch(`https://freeimage.host/api/1/upload`, {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!response.ok) {
-    throw new Error("Erro ao salvar imagem");
-  }
-
-  const json = (await response.json()) as FreeImageHostUploadResponse;
-
-  return json.image.url;
-}
-
 export async function createHeatmap(
   state: CreateHeatmapFormState,
   data: FormData,
@@ -194,7 +162,7 @@ export async function createHeatmap(
     const searchTerm = data.get("search-term") as string;
 
     const uniqueHash = await generateUniqueHash(jsonData, imgData, searchTerm);
-    const hashExists = await redis.exists(uniqueHash);
+    const hashExists = await kv.exists(uniqueHash);
 
     if (hashExists) {
       return {
@@ -212,11 +180,18 @@ export async function createHeatmap(
     const heatData = await parseHeatData(jsonData, searchTerm);
     const { heatPaint, scaleFactor } = generateHeatPaint(image, heatData);
     const plot = plotData(colorMap, image, heatPaint, scaleFactor, canvas, context);
-    const imageUrl = await uploadHeatmap(plot);
+    const { url, downloadUrl } = await put(uniqueHash, plot, { access: "public" });
 
-    await redis.set(
+    await kv.set(
       uniqueHash,
-      JSON.stringify({ url: imageUrl, timestamp: Date.now(), searchTerm }),
+      JSON.stringify({
+        url,
+        downloadUrl,
+        timestamp: Date.now(),
+        searchTerm,
+        width: image.width,
+        height: image.height,
+      }),
     );
     revalidatePath("/heatmaps");
 
