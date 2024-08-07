@@ -1,0 +1,31 @@
+name: desafio-noleak-mkvlrn
+
+services:
+  redis:
+    container_name: redis
+    image: redis:alpine
+    command: >
+      --requirepass redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    networks:
+      - default
+
+  minio:
+    image: bitnami/minio:latest
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+      - minio-data:/data
+    environment:
+      - MINIO_ROOT_USER=local_minio
+      - MINIO_ROOT_PASSWORD=local_minio
+      - MINIO_DEFAULT_BUCKETS=minio-bucket:public
+
+volumes:
+  redis-data:
+  minio-data:

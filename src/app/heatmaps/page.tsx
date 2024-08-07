@@ -1,15 +1,15 @@
 import { SimpleGrid } from "@mantine/core";
-import { kv } from "@vercel/kv";
 import { MapCard } from "~/components/card";
 import { PageTitle } from "~/components/page-title";
-import { type HeatmapEntry } from "~/types";
+import { redis } from "~/tools";
+import { HeatmapEntry } from "~/types";
 
 export default async function Heatmaps() {
-  const keys = await kv.keys("*");
-  const values = keys.length > 0 ? await kv.mget<HeatmapEntry["data"][]>(keys) : [];
+  const keys = await redis.keys("*");
+  const values = keys.length > 0 ? await redis.mget(keys) : [];
   const data = values.map((data, index) => ({
     hash: keys[index],
-    data,
+    data: JSON.parse(data ?? "") as HeatmapEntry["data"],
   }));
 
   return (

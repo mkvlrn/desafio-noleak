@@ -1,8 +1,6 @@
 "use server";
 
 import { createHash } from "node:crypto";
-import { put } from "@vercel/blob";
-import { kv } from "@vercel/kv";
 import {
   Canvas,
   CanvasRenderingContext2D,
@@ -12,6 +10,7 @@ import {
 } from "canvas";
 import colormap from "colormap";
 import { revalidatePath } from "next/cache";
+import { redis, s3save } from "~/tools";
 
 export interface CreateHeatmapFormState {
   errors: {
@@ -162,7 +161,7 @@ export async function createHeatmap(
     const searchTerm = data.get("search-term") as string;
 
     const uniqueHash = await generateUniqueHash(jsonData, imgData, searchTerm);
-    const hashExists = await kv.exists(uniqueHash);
+    const hashExists = await redis.exists(uniqueHash);
 
     if (hashExists) {
       return {
@@ -180,9 +179,9 @@ export async function createHeatmap(
     const heatData = await parseHeatData(jsonData, searchTerm);
     const { heatPaint, scaleFactor } = generateHeatPaint(image, heatData);
     const plot = plotData(colorMap, image, heatPaint, scaleFactor, canvas, context);
-    const { url, downloadUrl } = await put(uniqueHash, plot, { access: "public" });
+    const { url, downloadUrl } = await s3save(uniqueHash, plot, imgData.type);
 
-    await kv.set(
+    await redis.set(
       uniqueHash,
       JSON.stringify({
         url,
@@ -198,6 +197,7 @@ export async function createHeatmap(
     return { errors: {}, success: true, hash: uniqueHash };
   } catch (error) {
     const { cause } = error as Error;
+    console.log(error);
     if (cause === "term") {
       return { errors: { searchTerm: ["Nenhuma ocorrência encontrada"] } };
     }
