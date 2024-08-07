@@ -9,6 +9,7 @@ import {
   loadImage,
 } from "canvas";
 import colormap from "colormap";
+import { revalidatePath } from "next/cache";
 import { redis } from "~/redis";
 
 export interface CreateHeatmapFormState {
@@ -206,6 +207,7 @@ export async function createHeatmap(
     const imageUrl = await uploadHeatmap(plot);
 
     await redis.set(uniqueHash, imageUrl);
+    revalidatePath("/heatmaps");
 
     return { errors: {}, success: true };
   } catch (error) {
