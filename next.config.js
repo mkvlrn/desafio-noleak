@@ -10,6 +10,11 @@ export default {
       "@mantine/notifications",
       "@tabler/icons-react",
     ],
+    serverComponentsExternalPackages: [
+      "@smithy/util-retry",
+      "@smithy/middleware-retry",
+      "uuid",
+    ],
   },
   images: {
     remotePatterns: [
