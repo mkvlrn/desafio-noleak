@@ -1,5 +1,4 @@
-import { Card, Flex, Text } from "@mantine/core";
-import Image from "next/image";
+import { Card, Flex, Image, Text } from "@mantine/core";
 import Link from "next/link";
 import { type HeatmapEntry } from "~/types";
 

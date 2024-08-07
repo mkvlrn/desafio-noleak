@@ -20,7 +20,8 @@ export default {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "kqap36f76ezg1dly.public.blob.vercel-storage.com",
+
+        hostname: "desafio-noleak-mkvlrn.s3.sa-east-1.amazonaws.com",
         port: "",
       },
     ],
