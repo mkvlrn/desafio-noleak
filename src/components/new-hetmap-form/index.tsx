@@ -28,9 +28,9 @@ export function NewHetmapForm() {
 
   return (
     <form action={createHeatmapAction}>
-      <Box pos="relative">
-        <LoadingOverlay />
-        <Container size="sm" my={30}>
+      <Container size="sm" my={30}>
+        <Box pos="relative">
+          <LoadingOverlay />
           <input
             name="json-data"
             type="file"
@@ -86,8 +86,8 @@ export function NewHetmapForm() {
             setImgFile={setImgFile}
             setSearchTerm={setSearchTerm}
           />
-        </Container>
-      </Box>
+        </Box>
+      </Container>
     </form>
   );
 }
